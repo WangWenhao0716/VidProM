@@ -7,3 +7,7 @@ VidProM is the first dataset featuring 1.67 million unique text-to-video prompts
 You can download the VidProM under CC BY-NC 4.0 License from [Hugging Face](https://huggingface.co/datasets/WenhaoWang/VidProM).
 
 # Citation
+
+# Suggestions Welcomed
+
+If you have any suggestions to improve our VidProM dataset, please feel free to let me know: wangwenhao0716@gmail.com.
