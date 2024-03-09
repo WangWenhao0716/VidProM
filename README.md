@@ -101,7 +101,7 @@ uuid, features = read_descriptors('VidProM_embed.hdf5')
 
 
 # Datapoint
-![image](https://github.com/WangWenhao0716/VidProM/blob/main/datapoint.png)
+![image](https://github.com/WangWenhao0716/VidProM/blob/main/datapoint.jpg)
 
 
 
