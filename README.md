@@ -103,6 +103,14 @@ uuid, features = read_descriptors('VidProM_embed.hdf5')
 # Datapoint
 ![image](https://github.com/WangWenhao0716/VidProM/blob/main/datapoint.jpg)
 
+# Visualization
+
+<p align="center">
+  <img src="https://huggingface.co/datasets/WenhaoWang/VidProM/resolve/main/WizMap.png" width="800">
+</p>
+
+Click the [WizMap](https://poloclub.github.io/wizmap/?dataURL=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FWenhaoWang%2FVidProM%2Fresolve%2Fmain%2Fdata_gpu13.ndjson&gridURL=https%3A%2F%2Fhuggingface.co%2Fdatasets%2FWenhaoWang%2FVidProM%2Fresolve%2Fmain%2Fgrid_gpu13.json)
+(and wait for 5 seconds) for an interactive visualization of our 1.67 million prompts. Above is a thumbnail.
 
 
 # Comparison with DiffusionDB
