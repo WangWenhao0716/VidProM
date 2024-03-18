@@ -9,6 +9,8 @@ It inspires many exciting new research areas, such as Text-to-Video Prompt Engin
 # Download
 You can download the VidProM from [Hugging Face](https://huggingface.co/datasets/WenhaoWang/VidProM).
 
+For Chinese users, we cooperate with [Wisemodel](https://wisemodel.cn/home), and you can download them faster from [here](https://wisemodel.cn/datasets/WenhaoWang/VidProM). 
+
 ## Automatical
 Install the [datasets](https://huggingface.co/docs/datasets/v1.15.1/installation.html) library first, by:
 ```
