@@ -17,7 +17,7 @@ Install the [datasets](https://huggingface.co/docs/datasets/v1.15.1/installation
 pip install datasets
 ```
 Then it can be downloaded automatically with
-```
+```python
 import numpy as np
 from datasets import load_dataset
 dataset = load_dataset('WenhaoWang/VidProM')
@@ -66,7 +66,7 @@ wget https://huggingface.co/datasets/WenhaoWang/VidProM/resolve/main/VidProM_uni
 
 It can easily be read by
 
-```
+```python
 import pandas
 df = pd.read_csv("VidProM_unique.csv")
 ```
@@ -85,7 +85,7 @@ Below are three rows from ``VidProM_unique.csv``:
 
 It can easily be read by
 
-```
+```python
 import numpy as np
 import h5py
 def read_descriptors(filename):
