@@ -171,7 +171,7 @@ We can load videos using WebDataset from the `tar` files directly, and we assume
     *vc2_videos_example.tar 
     *ms_videos_example.tar
 ```
-We have the following WebDataset Dataloader:
+We have the following:
 
 ```python
 import os
