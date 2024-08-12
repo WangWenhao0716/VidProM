@@ -60,7 +60,7 @@ wget https://huggingface.co/datasets/WenhaoWang/VidProM/resolve/main/VidProM_uni
 
 ```
 # Dataloader
-We use the `example` folder to illustrate how to load VidProM using [PyTorch Dataloader](https://pytorch.org/tutorials/beginner/basics/data_tutorial.html) and [webdataset](https://github.com/webdataset/webdataset).
+We use the `example` folder to illustrate how to load VidProM using [PyTorch Dataloader](https://pytorch.org/tutorials/beginner/basics/data_tutorial.html) and [WebDataset](https://github.com/webdataset/webdataset).
 
 ## PyTorch Dataloader
 
@@ -157,6 +157,75 @@ hdf5_file = 'VidProM_embed_example.hdf5'
 video_dirs = ['t2vz_videos_example', 'pika_videos_example', 'vc2_videos_example', 'ms_videos_example']
 dataset = VidProMDataset(csv_file, hdf5_file, video_dirs)
 dataloader = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=0)
+```
+
+## WebDataset
+
+We can load videos using WebDataset from the `tar` files directly, and we assume the directory is 
+```
+*example
+    *VidProM_unique_example.csv
+    *VidProM_embed_example.hdf5
+    *pika_videos_example.tar
+    *t2vz_videos_example.tar
+    *vc2_videos_example.tar 
+    *ms_videos_example.tar
+```
+We have the following WebDataset Dataloader:
+
+```python
+import os
+import io
+import av
+import pandas as pd
+import h5py
+import numpy as np
+from PIL import Image
+import torchvision.transforms as transforms
+import torch
+import webdataset as wds
+```
+
+
+```python
+tar_file_path = 't2vz_videos_example.tar' # we use t2vz_videos_example.tar for example
+csv_file = 'VidProM_unique_example.csv'
+hdf5_file = 'VidProM_embed_example.hdf5'
+dataset = wds.WebDataset(tar_file_path)
+metadata = pd.read_csv(csv_file)
+hdf5_file = h5py.File(hdf5_file, 'r')
+hdf5_uuid = np.array(hdf5_file["uuid"][:], dtype=object).astype(str).tolist()
+hdf5_embed = np.array(hdf5_file['embeddings'])
+```
+
+```python
+for sample in dataset:
+    #obtain tensor of a video
+    binary_data = sample['mp4']
+    container = av.open(io.BytesIO(binary_data))
+    transform = transforms.ToTensor()
+    frames = []
+    for frame in container.decode(video=0):
+        img = frame.to_image()  
+        img_tensor = transform(img) 
+        frames.append(img_tensor)  
+    video_tensor = torch.stack(frames)
+    
+    #obtain uuid of a video
+    uuid = '-'.join(sample['__key__'].split('/')[-1].split('-')[1:])
+    
+    #obtain the prompt
+    prompt = list(metadata[metadata['uuid']==uuid].iloc[:, 1])[0]
+    
+    #obtain the time
+    time = list(metadata[metadata['uuid']==uuid].iloc[:, 2])[0]
+    
+    #obtain the nsfw_scores
+    nsfw_scores = list(metadata[metadata['uuid']==uuid].iloc[0, 3:])
+    
+    #obtain the prompt embedding
+    embed = torch.tensor(hdf5_embed[hdf5_uuid.index(uuid)])
+
 ```
 
 
