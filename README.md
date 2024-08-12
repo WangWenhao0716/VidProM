@@ -44,16 +44,16 @@ wget https://huggingface.co/datasets/WenhaoWang/VidProM/resolve/main/VidProM_uni
 		*pika_videos_1.tar
 		*pika_videos_2.tar
 		...
-    *vc2_videos
-        *vc2_videos_1.tar
+    	*vc2_videos
+        	*vc2_videos_1.tar
 		*vc2_videos_2.tar
 		...
-    *t2vz_videos
-        *t2vz_videos_1.tar
+    	*t2vz_videos
+        	*t2vz_videos_1.tar
 		*t2vz_videos_2.tar
 		...
-    *ms_videos
-        *ms_videos_1.tar
+    	*ms_videos
+        	*ms_videos_1.tar
 		*ms_videos_2.tar
 		...
     
