@@ -59,6 +59,106 @@ wget https://huggingface.co/datasets/WenhaoWang/VidProM/resolve/main/VidProM_uni
     
 
 ```
+# Dataloader
+We use the `example` folder to illustrate how to load VidProM using [PyTorch Dataloader](https://pytorch.org/tutorials/beginner/basics/data_tutorial.html) and [webdataset](https://github.com/webdataset/webdataset).
+
+## PyTorch Dataloader
+
+The `example` directory is 
+```
+*example
+    *VidProM_unique_example.csv
+    *VidProM_embed_example.hdf5
+    *pika_videos_example
+	pika-xxx-xxx.mp4
+        pika-xxx-xxx.mp4
+	...
+    *t2vz_videos_example
+	t2vz-xxx-xxx.mp4
+        t2vz-xxx-xxx.mp4
+	...
+    *vc2_videos_example
+	vc2-xxx-xxx.mp4
+        vc2-xxx-xxx.mp4
+	...
+    *ms_videos_example
+	ms-xxx-xxx.mp4
+        ms-xxx-xxx.mp4
+	...
+```
+
+We have the following PyTorch Dataloader:
+```python
+import os
+import pandas as pd
+import h5py
+import torch
+from torch.utils.data import Dataset, DataLoader
+from torchvision.io import read_video
+import numpy as np
+```
+
+
+```python
+class VidProMDataset(Dataset):
+    def __init__(self, csv_file, hdf5_file, video_dirs, transform=None):
+        
+        self.metadata = pd.read_csv(csv_file)
+        self.video_dirs = video_dirs
+        self.transform = transform
+        self.nsfw_names = ['toxicity','obscene','identity_attack','insult','threat','sexual_explicit']
+
+        self.hdf5_file =  h5py.File(hdf5_file, 'r')
+        self.hdf5_uuid = np.array(self.hdf5_file["uuid"][:], dtype=object).astype(str).tolist()
+        self.hdf5_embed = np.array(self.hdf5_file['embeddings'])
+        
+    def __len__(self):
+        return len(self.metadata)
+
+    def __getitem__(self, idx):
+        
+        video_info = self.metadata.iloc[idx]
+        video_id = video_info['uuid']
+        prompt = video_info['prompt']
+        time = video_info['time']
+        nsfw_scores = torch.tensor(list(video_info[self.nsfw_names]))
+        
+        embed = torch.tensor(self.hdf5_embed[self.hdf5_uuid.index(video_id)])
+        video_path = self._find_video_path(video_id)
+        video_frames, _, _ = read_video(video_path, pts_unit='sec')
+        
+        if self.transform:
+            video_frames = self.transform(video_frames)
+
+        return {
+            'video_id': video_id,
+            'video_frames': video_frames,
+            'embed': embed,
+            'prompt': prompt,
+            'time': time,
+            'nsfw_scores': nsfw_scores
+        }
+
+    def _find_video_path(self, video_id):
+        for video_dir in self.video_dirs:
+            video_file = os.path.join(video_dir, video_dir.split('_')[0] + f"-{video_id}.mp4")
+            if os.path.exists(video_file):
+                return video_file
+        raise FileNotFoundError(f"Video {video_id}.mp4 not found in any of the directories.")
+
+    def __del__(self):
+        self.hdf5_file.close()
+
+```
+
+```python
+csv_file = 'VidProM_unique_example.csv'
+hdf5_file = 'VidProM_embed_example.hdf5'
+video_dirs = ['t2vz_videos_example', 'pika_videos_example', 'vc2_videos_example', 'ms_videos_example']
+dataset = VidProMDataset(csv_file, hdf5_file, video_dirs)
+dataloader = DataLoader(dataset, batch_size=16, shuffle=False, num_workers=0)
+```
+
 
 # Explanation
 
